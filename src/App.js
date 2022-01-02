@@ -16,7 +16,7 @@ export default function App() {
     </div>
     </div><div className="Links">
         <footer>
-          <GitHubLink />
+          This project is created by Natalia Hertsovska and is open-sourced on         <GitHubLink />
         </footer>
       </div></>
   );
