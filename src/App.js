@@ -4,7 +4,7 @@ import "./App.css";
 
 
 
-import WeatherSearch from "./WeatherSearch";
+import WeatherSearch from "./Weather";
 import GitHubLink from "./GitHubLink";
 
 export default function App() {
