@@ -3,78 +3,79 @@ import axios from "axios";
 import "./Weather.css";
 
 export default function Weather() {
-  const [city, setCity] = useState(null);
-  const [temperature, setTemperature] = useState(null);
-  const [description, setDescription] = useState(null);
-  const [windSpeed, setWindSpeed] = useState(null);
-  const [humidity, setHumidity] = useState(null);
-  const form = (
-    <form>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Enter a city"
-              aria-label="Searched city"
-              aria-describedby="button-addon2"
-              autocomplete="off"
-              autofocus="on"
-              id="city-input"
-              onChange={getCity}
-            />
-            <button
-              class="btn btn-outline-secondary"
-              type="button"
-              id="search-button-head"
-              input
-              type="submit"
-              value="search"
-              onClick={handleSubmit}
-            >
-              Search
-            </button>
-            <button
-              class="btn btn-outline-secondary"
-              type="button"
-              id="currentCityHead"
-            >
-              Current city
-            </button>                                        
-        </form>
-    
-  );
-  function getCity(event) {
-    setCity(event.target.value);
+  const [weatherData, setWeatherData] = useState ({ready: false})
+  ;
+  function handleResponse(response) {
+    console.log(response.data);
+    setWeatherData({
+      ready: true,
+      temperature: response.data.main.temp,
+      humidity: response.data.mail.humidity,
+      date: "Tuesday  18:00",
+      description: response.data.weather[0].description,
+      iconUrl: "https://ssl.gstatic.com/onebox/weather/64/cloudy.png",
+      wind: response.data.wind.speed,
+      city: response.data.name
+    });
   }
-  function handleSubmit(event) {
-    event.preventDefault();
-    if (city !== "") {
-      const apiKey = `ab8e7ef210556986d1c9a75d6007b825`;
-      const units = "metric";
-      const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${units}`;
-      axios.get(apiUrl).then(showWeather);
-    } else {
-      alert(`Please enter a city`);
-    }
-  }
-  function showWeather(response) {
-    setTemperature(Math.round(response.data.main.temp));
-    setDescription(response.data.weather[0].main);
-    setWindSpeed(Math.round(response.data.wind.speed));
-    setHumidity(response.data.main.humidity);
-  }
-  if (temperature) {
+
+  if (weatherData.ready) {
     return (
-      <div>
-        {form}
-        <ul className="Weather">
-          <li>Tempurature : {temperature}°C</li>
-          <li>Description : {description}</li>
-          <li>Wind : {windSpeed} km/h </li>
-          <li>Humidity : {humidity}% </li>
-        </ul>
+      <div className="Weather">
+         <form>
+           <div className="row">
+             <div className="col-9">
+      <input
+        type="search"
+        placeholder="Enter a city"
+        className="form-control"
+        autofocus="on"
+      />
       </div>
-    );
+      <div className="col-3"></div>
+      <input
+      type="submit"
+      value="search"
+      className="btn btn-primary" />
+           </div>                                       
+  </form>
+        <div className="container-left-side col-5">
+            <div className="row">
+              <div className="city">{weatherData.city}</div>
+            </div>
+            <div class="row">
+              <h5 className="date"> {weatherData.date} </h5>
+            </div>
+            <span className="weather-description">{weatherData.description} </span>
+            <div className="clearfix weather-temperature">
+              <img src="{weatherData.description}" 
+              alt="weatherCondition"
+              className="float-left"/>
+            </div>
+       <i className="fas fa-thermometer-half">
+              Temperature: <span className="temperature">{Math.round(weatherData.temperature)} </span>°C   
+            </i>
+            <br />
+            <i className="fas fa-tint">Humidity:{weatherData.humidity} <span id="humidity"></span> % </i>
+            <br />
+            <i className="fas fa-wind">Wind speed: {weatherData.wind} <span id="wind"></span> km/h </i>
+            <br />
+            <br />
+            <br />
+        </div>
+        </div>
+    )
   } else {
-    return <div>{form}</div>;
+    const apiKey = "ab8e7ef210556986d1c9a75d6007b825";
+    let city = "Nitra";
+    let units = "metric";
+    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${units}`;
+  axios.get(apiUrl).then(handleResponse);
+  return "Loading" ;
   }
 }
+
+  
+
+
+  
